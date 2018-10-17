@@ -23,7 +23,7 @@ class Dvisvgm < Formula
 
     # Install kpathsea locally. It comes from the TeXLive distribution, but we
     # don't need the entire distribution. dvisvgm only needs it as a library and
-    # doesn't need to binaries.
+    # doesn't need the binaries.
     resource("kpathsea").stage do
       chdir "texk/kpathsea" do
         system "./configure",
