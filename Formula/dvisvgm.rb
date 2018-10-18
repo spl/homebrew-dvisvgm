@@ -29,11 +29,16 @@ class Dvisvgm < Formula
     # doesn't need the binaries.
     resource("kpathsea").stage do
       chdir "texk/kpathsea" do
+        # Build
         system "./configure",
           "--disable-dependency-tracking",
           "--disable-silent-rules",
           "--prefix=#{libexec}/kpathsea"
         system "make", "install"
+
+        # Save the texmf.cnf file used by kpathsea.
+        # See https://tug.org/texinfohtml/kpathsea.html#Config-files
+        prefix.install "texmf.cnf"
       end
     end
 
