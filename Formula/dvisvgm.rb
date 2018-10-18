@@ -23,12 +23,6 @@ class Dvisvgm < Formula
     sha256 "a262184d4344b2ce72df38f2b0f176535e16d19970774d52f0b98257da515e82"
   end
 
-  # A test DVI file
-  resource "sample.dvi" do
-    url "https://github.com/mgieseki/dvisvgm/raw/9e57c1e13b6d52c899beba376495d73e1089ecf6/tests/data/sample.dvi"
-    sha256 "85adb23a08cdbcebef47331963369cd160a864a9695d91b7468bf756affa175f"
-  end
-
   def install
     # Install kpathsea locally. It comes from the TeXLive distribution, but we
     # don't need the entire distribution. dvisvgm only needs it as a library and
@@ -43,6 +37,9 @@ class Dvisvgm < Formula
       end
     end
 
+    # Save the test DVI file.
+    (libexec/"test").install "tests/data/sample.dvi"
+
     # Configure dvisvgm with kpathsea directory
     system "./configure",
       "--disable-dependency-tracking",
@@ -55,9 +52,7 @@ class Dvisvgm < Formula
   end
 
   test do
-    resource("sample.dvi").stage do
-      system "#{bin}/dvisvgm", "sample.dvi"
-    end
+    system "#{bin}/dvisvgm", "#{libexec}/test/sample.dvi"
   end
 
 end
