@@ -8,19 +8,28 @@ class Dvisvgm < Formula
 
   depends_on "brotli"
   depends_on "freetype"
-  depends_on "openssl"
+  depends_on "ghostscript"
+  depends_on "openssl" # for md5
   depends_on "potrace"
   depends_on "woff2"
   depends_on "xxhash"
 
-  # This is a kpathsea release extracted from the TeXLive distribution.
+  # Other dependencies:
+  #   * zlib - included in macOS, see /usr/include/zlib.h
+
+  # A kpathsea release extracted from the TeXLive distribution
   resource "kpathsea" do
     url "https://github.com/spl/kpathsea-releases/raw/master/kpathsea-6.3.0.tar.gz"
     sha256 "a262184d4344b2ce72df38f2b0f176535e16d19970774d52f0b98257da515e82"
   end
 
-  def install
+  # A test DVI file
+  resource "sample.dvi" do
+    url "https://github.com/mgieseki/dvisvgm/raw/9e57c1e13b6d52c899beba376495d73e1089ecf6/tests/data/sample.dvi"
+    sha256 "85adb23a08cdbcebef47331963369cd160a864a9695d91b7468bf756affa175f"
+  end
 
+  def install
     # Install kpathsea locally. It comes from the TeXLive distribution, but we
     # don't need the entire distribution. dvisvgm only needs it as a library and
     # doesn't need the binaries.
@@ -45,17 +54,10 @@ class Dvisvgm < Formula
     system "make", "install"
   end
 
-  #test do
-    # `test do` will create, run in and delete a temporary directory.
-    #
-    # This test will fail and we won't accept that! For Homebrew/homebrew-core
-    # this will need to be a test that verifies the functionality of the
-    # software. Run the test with `brew test dvisvgm`. Options passed
-    # to `brew install` such as `--HEAD` also need to be provided to `brew test`.
-    #
-    # The installed folder is not in the path, so use the entire path to any
-    # executables being tested: `system "#{bin}/program", "do", "something"`.
-    #system "false"
-  #end
+  test do
+    resource("sample.dvi").stage do
+      system "#{bin}/dvisvgm", "sample.dvi"
+    end
+  end
 
 end
